@@ -1,6 +1,6 @@
 package connection;
 
-import model.Person;
+import model.*;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
@@ -18,6 +18,10 @@ public class SessionFactorySingleton {
                     .build();
             INSTANCE = new MetadataSources(registry)
                     .addAnnotatedClass(Person.class)
+                    .addAnnotatedClass(Course.class)
+                    .addAnnotatedClass(Professor.class)
+                    .addAnnotatedClass(Student.class)
+                    .addAnnotatedClass(Employee.class)
                     .buildMetadata()
                     .buildSessionFactory();
         }
