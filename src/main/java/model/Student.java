@@ -1,5 +1,6 @@
 package model;
 
+import base.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,7 +17,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 
-public class Student extends Person {
+public class Student extends Person{
     private Double gpa;
     private Integer unitsTaken;
 
