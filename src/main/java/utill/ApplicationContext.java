@@ -1,6 +1,7 @@
 package utill;
 
 import base.connection.SessionFactorySingleton;
+import model.Person;
 import org.hibernate.SessionFactory;
 import repository.courseRepository.CourseRepository;
 import repository.courseRepository.CourseRepositoryImpl;
@@ -11,6 +12,7 @@ import repository.personRepository.PersonRepositoryImpl;
 import repository.professorRepository.ProfessorRepository;
 import repository.professorRepository.ProfessorRepositoryImpl;
 import repository.studentRepository.StudentRepository;
+import repository.studentRepository.StudentRepositoryImpl;
 import service.courceServise.CourseService;
 import service.courceServise.CourseServiceImpl;
 import service.employeeService.EmployeeService;
@@ -20,6 +22,9 @@ import service.personService.PersonServiceImpl;
 import service.professorService.ProfessorService;
 import service.professorService.ProfessorServiceImpl;
 import service.studentService.StudentService;
+import service.studentService.StudentServiceImpl;
+
+import java.util.Optional;
 
 public class ApplicationContext {
 
@@ -54,8 +59,8 @@ public class ApplicationContext {
         PROFESSOR_REPOSITORY = new ProfessorRepositoryImpl(SESSION_FACTORY);
         PROFESSOR_SERVICE = new ProfessorServiceImpl(PROFESSOR_REPOSITORY, SESSION_FACTORY);
 
-        STUDENT_REPOSITORY = new CourseRepositoryImpl(SESSION_FACTORY);
-        STUDENT_SERVICE = new CourseServiceImpl(STUDENT_REPOSITORY, SESSION_FACTORY);
+        STUDENT_REPOSITORY = new StudentRepositoryImpl(SESSION_FACTORY) ;
+        STUDENT_SERVICE = new StudentServiceImpl(STUDENT_REPOSITORY, SESSION_FACTORY);
 
     }
 
