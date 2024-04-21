@@ -15,8 +15,8 @@ import lombok.Setter;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "person_type", discriminatorType = DiscriminatorType.STRING)
 public class Person extends BaseEntity<Long>{
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+
+
 
     private String firstName;
 

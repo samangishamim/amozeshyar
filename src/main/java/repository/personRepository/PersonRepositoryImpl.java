@@ -10,6 +10,10 @@ import org.hibernate.query.Query;
 import java.util.List;
 
 public class PersonRepositoryImpl extends BaseRepositoryImpl<Person,Long> implements PersonRepository  {
+    public PersonRepositoryImpl(SessionFactory sessionFactory) {
+        super(sessionFactory);
+    }
+
     @Override
     public Class getEntityClass() {
         return null;

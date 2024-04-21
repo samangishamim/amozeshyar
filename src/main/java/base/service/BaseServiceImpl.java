@@ -9,6 +9,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 
 import java.io.Serializable;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 public class BaseServiceImpl<T extends BaseEntity<ID>,
@@ -39,11 +40,15 @@ public class BaseServiceImpl<T extends BaseEntity<ID>,
     public T findById(ID id) {
         try (Session session = sessionFactory.getCurrentSession()) {
             session.beginTransaction();
-            T foundEntity = repository.findById(id).get();
+            Optional <T> optionalT = repository.findById(id);
+            optionalT.orElseThrow(
+                    () -> new NotFoundException(String.format("entity with %s not found", id))
+            );
             session.getTransaction().commit();
-            return foundEntity;
+            return optionalT.get();
         } catch (Exception e) {
-            throw new NotFoundException(String.format("entity with %s not found", id));
+            e.printStackTrace();
+            return null;
         }
     }
 

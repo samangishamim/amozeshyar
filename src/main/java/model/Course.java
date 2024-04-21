@@ -13,16 +13,14 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Course extends BaseEntity<Long> {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+
 
     private String name;
     private Integer units;
     private Integer grade;
 
     @ManyToOne
-    @JoinColumn(name = "PROFESSOR_ID")
+    @JoinColumn(name = "professor_id")
     private Professor professor;
 
 }

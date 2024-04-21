@@ -1,7 +1,8 @@
 package repository.courseRepository;
 
 import base.repository.BaseRepository;
+import model.Course;
 import model.Person;
 
-public interface CourseRepository extends BaseRepository<Person, Long> {
+public interface CourseRepository extends BaseRepository<Course, Long> {
 }

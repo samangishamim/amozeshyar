@@ -1,6 +1,5 @@
 package model;
 
-import base.entity.BaseEntity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
@@ -10,7 +9,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -21,8 +22,10 @@ import java.util.Set;
 @AllArgsConstructor
 
 public class Professor extends Person {
-    private Double salary;
+    private Double basicSalary;
+    private Double paperUnit;
+    private ProfessorType professorType;
 
     @OneToMany(mappedBy = "professor", cascade = { CascadeType.ALL })
-    private Set<Course> coursesTaught = new HashSet<>();
+    private List<Course> courseList = new ArrayList<>();
 }
