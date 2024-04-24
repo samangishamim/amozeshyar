@@ -17,6 +17,4 @@ import lombok.Setter;
 
 public class Employee extends Person {
     private Double salary;
-    private String role;
-
 }
