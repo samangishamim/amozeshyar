@@ -8,14 +8,10 @@
   <property name="connection.username">postgres</property>
   <property name="connection.password">shamim1379</property>
 
-  <property name="hbm2ddl.auto">create</property>
+  <property name="hbm2ddl.auto">update</property>
   <property name="hibernate.show_sql">true</property>
   <property name="hibernate.format_sql">false</property>
-  <mapping class="model.Person"/>
-  <mapping class="model.Employee"/>
-  <mapping class="model.Course"/>
-  <mapping class="model.Professor"/>
-  <mapping class="model.Student"/>
+ <property name="hibernate.current_session_context_class">thread</property>
 
 </session-factory>
 </hibernate-configuration>
