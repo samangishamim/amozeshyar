@@ -22,6 +22,7 @@ public class SessionFactorySingleton {
                     .addAnnotatedClass(Professor.class)
                     .addAnnotatedClass(Student.class)
                     .addAnnotatedClass(Employee.class)
+                    .addAnnotatedClass(RegisterCourse.class)
                     .buildMetadata()
                     .buildSessionFactory();
         }
