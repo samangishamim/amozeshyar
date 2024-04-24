@@ -1,6 +1,6 @@
 package utill;
 
-import base.connection.SessionFactorySingleton;
+import connection.SessionFactorySingleton;
 import model.Person;
 import org.hibernate.SessionFactory;
 import repository.courseRepository.CourseRepository;
