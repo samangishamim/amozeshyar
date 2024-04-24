@@ -1,6 +1,8 @@
 //package utill;
 //
+//import connection.SessionFactorySingleton;
 //import model.Professor;
+//import model.Student;
 //import org.hibernate.HibernateException;
 //import org.hibernate.Session;
 //import org.hibernate.Transaction;
@@ -9,18 +11,18 @@
 //
 //public class EmployeeMenu {
 //
-//    private Scanner scanner;
+//    private final Scanner scanner;
 //
 //    private EmployeeMenu employeeDao;
 //
-//    private ProfessorDao professorDao;
+//    private ProfessorMenu professorDao;
 //
 //    private StudentDao studentDao;
 //
 //    private CourseDao courseDao;
 //
 //
-//    public EmployeeMenu(Scanner scanner, EmployeeDao employeeDao, ProfessorDao professorDao, StudentDao studentDao, CourseDao courseDao) {
+//    public EmployeeMenu(Scanner scanner, EmployeeMenu employeeDao, ProfessorMenu professorDao, StudentDao studentDao, CourseDao courseDao) {
 //
 //        this.scanner = scanner;
 //
@@ -168,7 +170,7 @@
 //
 //    private void registerStudent() {
 //
-//        Session session = HibernateUtil.getSessionFactory().openSession();
+//        Session session = SessionFactorySingleton.getInstance().openSession();
 //
 //        Transaction transaction = null;
 //
@@ -209,10 +211,10 @@
 //
 //
 //
-//            Student student = new Student(firstName, lastName, username, password, gpa);
+//            Student student = new Student();
 //
 //
-//            studentDao.save(session, student);
+//            studentDao.saveOrUpdate(session, student);
 //
 //
 //
