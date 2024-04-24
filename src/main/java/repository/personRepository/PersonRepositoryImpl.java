@@ -1,6 +1,6 @@
 package repository.personRepository;
 
-import base.connection.SessionFactorySingleton;
+import connection.SessionFactorySingleton;
 import base.repository.BaseRepositoryImpl;
 import model.Person;
 import org.hibernate.Session;
