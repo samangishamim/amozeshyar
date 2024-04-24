@@ -1,7 +1,7 @@
 package base.service;
 
 import base.entity.BaseEntity;
-import base.exception.NotFoundException;
+import exception.NotFoundException;
 import base.repository.BaseRepository;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.Session;
@@ -9,6 +9,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -18,8 +19,8 @@ public class BaseServiceImpl<T extends BaseEntity<ID>,
         implements BaseService<T, ID> {
 
 
-    private final R repository;
-    private final SessionFactory sessionFactory;
+    public final R repository;
+    public final SessionFactory sessionFactory;
 
     @Override
     public T saveOrUpdate(T entity) {
@@ -63,5 +64,10 @@ public class BaseServiceImpl<T extends BaseEntity<ID>,
             assert transaction != null;
             transaction.rollback();
         }
+    }
+
+    @Override
+    public List<T> findAll() {
+        return repository.findAll();
     }
 }
