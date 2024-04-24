@@ -4,4 +4,7 @@ import base.service.BaseService;
 import model.Course;
 
 public interface CourseService extends BaseService<Course, Long> {
+
+    void addCourse(Course course,Long professorId);
+
 }
