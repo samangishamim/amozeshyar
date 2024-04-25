@@ -12,9 +12,18 @@ import lombok.Setter;
 @DiscriminatorValue(value = "Employee")
 @Setter
 @Getter
-@AllArgsConstructor
 @NoArgsConstructor
 
 public class Employee extends Person {
     private Double salary;
+
+
+    public Employee(String firstName, String lastName, String username, String password, Double salary) {
+        super(firstName, lastName, username, password);
+        this.salary = salary;
+    }
+
+    public Employee(Double salary) {
+        this.salary = salary;
+    }
 }
