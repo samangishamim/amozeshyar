@@ -52,4 +52,6 @@ public abstract class BaseRepositoryImpl<T extends BaseEntity<ID>
             return resultList;
         }
     }
+
+    public abstract String getMyClass();
 }
