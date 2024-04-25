@@ -1,15 +1,18 @@
 package repository.courseRepository;
 
 import base.repository.BaseRepositoryImpl;
-import connection.SessionFactorySingleton;
 import model.Course;
-import model.Person;
 import model.Professor;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import repository.personRepository.PersonRepository;
+import org.hibernate.query.Query;
 
-public class CourseRepositoryImpl extends BaseRepositoryImpl<Course,Long> implements CourseRepository {
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+
+public class CourseRepositoryImpl extends BaseRepositoryImpl<Course, Long> implements CourseRepository {
 
 
     public CourseRepositoryImpl(SessionFactory sessionFactory) {
@@ -21,14 +24,63 @@ public class CourseRepositoryImpl extends BaseRepositoryImpl<Course,Long> implem
         return Course.class;
     }
 
+
+    @Override
+    public String getMyClass() {
+        return "Course";
+    }
+
     @Override
     public void addCourse(Course course, Long professorId) {
         Session session = sessionFactory.getCurrentSession();
         Professor professor = session.get(Professor.class, professorId);
         course.setProfessor(professor);
-        if (course.getId()==null)
-        session.persist(course);
+        if (course.getId() == null)
+            session.persist(course);
         else
             session.merge(course);
+    }
+
+    @Override
+    public Optional<List<Course>> findCourseByYearAndSemesterAndProfessorId(int year, int semester, Long professorId) {
+        Session session = sessionFactory.getCurrentSession();
+        Query<Course> query = session.createQuery("FROM course c " +
+                "WHERE c.year = :year AND c.semester = :semester", Course.class);
+        query.setParameter("year", year);
+        query.setParameter("semester", semester);
+        List<Course> resultList = query.getResultList();
+        List<Course> newList = new ArrayList<>();
+        for (Course course : resultList) {
+            if (Objects.equals(course.getProfessor().getId(), professorId)) {
+                newList.add(course);
+            }
+        }
+        return Optional.ofNullable(newList);
+    }
+
+    @Override
+    public Optional<List<Course>> findCourseByYearAndSemester(int year, int semester) {
+        Session session = sessionFactory.getCurrentSession();
+        Query<Course> query = session.createQuery("FROM Course c " +
+                "WHERE c.year = :year AND c.semester = :semester", Course.class);
+        query.setParameter("year", year);
+        query.setParameter("semester", semester);
+        List<Course> resultList = query.getResultList();
+        return Optional.ofNullable(resultList);
+    }
+
+    @Override
+    public boolean findCourseByIdOfCourse(int year, int semester, int idOfCourse) {
+        try (Session session = sessionFactory.getCurrentSession()) {
+            session.beginTransaction();
+            Query query = session.createQuery("FROM Course c WHERE c.idOfCourse = :idOfCourse AND " +
+                    "c.year = :year AND c.semester = :semester");
+            query.setParameter("idOfCourse", idOfCourse);
+            query.setParameter("year", year);
+            query.setParameter("semester", semester);
+            boolean empty = query.getResultList().isEmpty();
+            session.getTransaction().commit();
+            return empty;
+        }
     }
 }
