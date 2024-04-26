@@ -70,10 +70,21 @@ public class CourseRepositoryImpl extends BaseRepositoryImpl<Course, Long> imple
     }
 
     @Override
+    public Optional<Long> professorSemesterSalary(Professor professor, int semester) {
+        Session session = sessionFactory.getCurrentSession();
+        Query<Long> query = session.createQuery("select sum (c.units) FROM course c\n" +
+                "                 WHERE c.professor_id=:professor AND c.semester=:semester"+Long.class);
+        query.setParameter("professor",professor);
+        query.setParameter("semester",semester);
+
+        return Optional.ofNullable(query.getSingleResult());
+    }
+
+    @Override
     public boolean findCourseByIdOfCourse(int year, int semester, int idOfCourse) {
-        try (Session session = sessionFactory.getCurrentSession()) {
+        try(Session session = sessionFactory.getCurrentSession()) {
             session.beginTransaction();
-            Query query = session.createQuery("FROM Course c WHERE c.idOfCourse = :idOfCourse AND " +
+            Query query = session.createQuery("FROM Course c WHERE c.courseCode = :courseCode AND " +
                     "c.year = :year AND c.semester = :semester");
             query.setParameter("idOfCourse", idOfCourse);
             query.setParameter("year", year);
