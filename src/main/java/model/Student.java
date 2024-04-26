@@ -8,12 +8,14 @@ import lombok.Setter;
 
 import java.util.List;
 
-@Entity
-@DiscriminatorValue(value = "Student")
+
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
+
+
+@Table(name = "students")
+
+@Entity
 
 public class Student extends Person {
 
@@ -21,4 +23,21 @@ public class Student extends Person {
     private List<RegisterCourse> registerCourses;
 
 
+    public Student(String firstName, String lastName, String username, String password, List<RegisterCourse> registerCourses) {
+        super(firstName, lastName, username, password);
+        this.registerCourses = registerCourses;
+    }
+
+    public Student(Long aLong, String firstName, String lastName, String username, String password, List<RegisterCourse> registerCourses) {
+        super(aLong, firstName, lastName, username, password);
+        this.registerCourses = registerCourses;
+    }
+
+    @Override
+    public String toString() {
+        return "Student{" +
+                "registerCourses=" + registerCourses +
+                ", id=" + id +
+                '}';
+    }
 }
