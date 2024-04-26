@@ -19,10 +19,12 @@ public class SessionFactorySingleton {
             INSTANCE = new MetadataSources(registry)
                     .addAnnotatedClass(Person.class)
                     .addAnnotatedClass(Course.class)
+                    .addAnnotatedClass(CourseGrade.class)
                     .addAnnotatedClass(Professor.class)
                     .addAnnotatedClass(Student.class)
                     .addAnnotatedClass(Employee.class)
                     .addAnnotatedClass(RegisterCourse.class)
+                    .addAnnotatedClass(SemesterGrade.class)
                     .buildMetadata()
                     .buildSessionFactory();
         }
