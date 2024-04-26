@@ -1,6 +1,7 @@
 package model;
 
 import base.entity.BaseEntity;
+import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import lombok.AllArgsConstructor;
@@ -8,22 +9,30 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Entity
-@DiscriminatorValue(value = "Employee")
+
 @Setter
 @Getter
-@NoArgsConstructor
 
+
+@Entity
 public class Employee extends Person {
+    @Column(nullable = false)
     private Double salary;
 
 
-    public Employee(String firstName, String lastName, String username, String password, Double salary) {
-        super(firstName, lastName, username, password);
-        this.salary = salary;
+    public Employee(Long aLong, String firstName, String lastName, String username, String password) {
+        super(aLong, firstName, lastName, username, password);
     }
 
-    public Employee(Double salary) {
-        this.salary = salary;
+    public Employee(String firstName, String lastName, String username, String password) {
+        super(firstName, lastName, username, password);
+    }
+
+    @Override
+    public String toString() {
+        return "Employee{" +
+                "salary=" + salary +
+                ", id=" + id +
+                '}';
     }
 }
