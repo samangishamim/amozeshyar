@@ -2,6 +2,7 @@ package utill;
 
 import connection.SessionFactorySingleton;
 import model.Person;
+import model.RegisterCourse;
 import org.hibernate.SessionFactory;
 import repository.courseRepository.CourseRepository;
 import repository.courseRepository.CourseRepositoryImpl;
@@ -11,6 +12,8 @@ import repository.personRepository.PersonRepository;
 import repository.personRepository.PersonRepositoryImpl;
 import repository.professorRepository.ProfessorRepository;
 import repository.professorRepository.ProfessorRepositoryImpl;
+import repository.registerCourse.RegisterCourseRepository;
+import repository.registerCourse.RegisterCourseRepositoryImpl;
 import repository.studentRepository.StudentRepository;
 import repository.studentRepository.StudentRepositoryImpl;
 import service.courceServise.CourseService;
@@ -21,9 +24,12 @@ import service.personService.PersonService;
 import service.personService.PersonServiceImpl;
 import service.professorService.ProfessorService;
 import service.professorService.ProfessorServiceImpl;
+import service.registerCourse.RegisterCourseService;
+import service.registerCourse.RegisterCourseServiceImpl;
 import service.studentService.StudentService;
 import service.studentService.StudentServiceImpl;
 
+import java.security.PrivateKey;
 import java.util.Optional;
 
 public class ApplicationContext {
@@ -44,6 +50,9 @@ public class ApplicationContext {
     private static final StudentRepository STUDENT_REPOSITORY;
     private static final StudentService STUDENT_SERVICE;
 
+    private static final RegisterCourseRepository REGISTER_COURSE_REPOSITORY;
+    private static final RegisterCourseService REGISTER_COURSE_SERVICE;
+
     static {
         SESSION_FACTORY = SessionFactorySingleton.getInstance();
 
@@ -61,6 +70,9 @@ public class ApplicationContext {
 
         STUDENT_REPOSITORY = new StudentRepositoryImpl(SESSION_FACTORY) ;
         STUDENT_SERVICE = new StudentServiceImpl(STUDENT_REPOSITORY, SESSION_FACTORY);
+
+        REGISTER_COURSE_REPOSITORY = new RegisterCourseRepositoryImpl(SESSION_FACTORY) ;
+        REGISTER_COURSE_SERVICE = new RegisterCourseServiceImpl(REGISTER_COURSE_REPOSITORY, SESSION_FACTORY);
 
     }
 
@@ -82,7 +94,8 @@ public class ApplicationContext {
     public static StudentService getStudentService() {
         return STUDENT_SERVICE;
     }
-
-
+    public static RegisterCourseService getRegisterCourseService() {
+        return REGISTER_COURSE_SERVICE;
+    }
 }
 
