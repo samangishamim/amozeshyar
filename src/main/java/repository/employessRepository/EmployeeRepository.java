@@ -8,8 +8,7 @@ import repository.personRepository.PersonRepository;
 import java.util.Optional;
 
 public interface EmployeeRepository extends BaseRepository<Employee, Long> {
-    EmployeeRepositoryImpl.EmployeePay pay(Long id);
-    Optional<Employee> findByNationalId(String nationalId);
-    boolean checkNationalIdAndPassword(String nationalId, String password);
+    public Optional<Employee> employeeSignIn(String nationalId , String password);
+    public Optional<Employee> employeeSalary(String nationalId);
 
 }

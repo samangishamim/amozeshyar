@@ -29,50 +29,27 @@ public class  EmployeeRepositoryImpl extends BaseRepositoryImpl<Employee,Long> i
         return "Employee";
     }
 
-    @Override
-    public EmployeeRepositoryImpl.EmployeePay pay(Long id) {
-        try (Session session = sessionFactory.getCurrentSession()) {
-            session.beginTransaction();
-
-
-            Query<Employee> query = session.createQuery("FROM Employee e " +
-                    "WHERE e.id = : employeeId", Employee.class);
-            query.setParameter("employeeId", id);
-            List<Employee> resultList = query.setParameter("employeeId", id).getResultList();
-            return new EmployeePay(resultList.get(0).getFirstName(),
-                    resultList.get(0).getLastName(),
-                    resultList.get(0).getSalary());
-        }
-    }
 
     @Override
-    public Optional<Employee> findByNationalId(String nationalId) {
+    public Optional<Employee> employeeSignIn(String username, String password) {
         Session session = sessionFactory.getCurrentSession();
-        Query<Employee> query =
-                session.createQuery("FROM Employee e WHERE e.nationalId = :theNationalId", Employee.class);
-        List<Employee> resultList = query.setParameter("theNationalId", nationalId).getResultList();
-        if (resultList.isEmpty()) {
-            return Optional.empty();
-        }
-        return Optional.of(resultList.get(0));
+        String hql ="FROM %s WHERE username=:username AND password=:password ";
+        Query<Employee> query = session.createQuery(String.format(hql , getMyClass()),getEntityClass());
+        query.setParameter("username", username );
+        query.setParameter( "password" , password );
+        Object result = query.uniqueResult();
+
+        return Optional.ofNullable(query.getSingleResult());
     }
 
     @Override
-    public boolean checkNationalIdAndPassword(String nationalId, String password) {
-        SessionFactory factory = SessionFactorySingleton.getInstance();
-        try (Session session = factory.getCurrentSession()){
-            session.beginTransaction();
+    public Optional<Employee> employeeSalary(String username) {
+        Session session = sessionFactory.getCurrentSession();
+        Query<Employee> query = session.createQuery("FROM Employee e  " +
+                " WHERE e.nationalid=:nationalid" , Employee.class);
+        query.setParameter("username", username );
+        Employee employee = query.uniqueResult();
 
-            Query<Person> query = session.createQuery("FROM Employee e " +
-                    "WHERE e.nationalId = :nId AND e.password = :pass");
-            query.setParameter("nId", nationalId);
-            query.setParameter("pass", password);
-            List<Person> resultList = query.getResultList();
-
-            session.getTransaction().commit();
-            return resultList.isEmpty();
-        }    }
-
-        public record EmployeePay(String firstName, String lastName, Double salary) {
-        }
+        return Optional.ofNullable(query.getSingleResult());
+    }
 }
