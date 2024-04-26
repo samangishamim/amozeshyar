@@ -1,9 +1,6 @@
 package model;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.DiscriminatorValue;
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.ArrayList;
@@ -11,18 +8,31 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-@Entity
-@DiscriminatorValue(value = "Professor")
+
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
 
+@Entity
 public class Professor extends Person {
+
+
+    @Column(name = "main_salary", nullable = false)
     private Double basicSalary;
+
+    @Column(name = "pay_per_unit", nullable = false)
     private Double payPerUnit;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private ProfessorType professorType;
 
+    public Professor(Long aLong,String firstName, String lastName, String username, String password, Double basicSalary,
+                     Double payPerUnit, ProfessorType professorType) {
+        super(firstName, lastName, username, password);
+        this.basicSalary = basicSalary;
+        this.payPerUnit = payPerUnit;
+        this.professorType = professorType;
+    }
     public Professor(String firstName, String lastName, String username, String password, Double basicSalary,
                      Double payPerUnit, ProfessorType professorType) {
         super(firstName, lastName, username, password);
@@ -31,11 +41,6 @@ public class Professor extends Person {
         this.professorType = professorType;
     }
 
-    public Professor(Double basicSalary, Double payPerUnit, ProfessorType professorType) {
-        this.basicSalary = basicSalary;
-        this.payPerUnit = payPerUnit;
-        this.professorType = professorType;
-    }
 
     @OneToMany(mappedBy = "professor", cascade = {CascadeType.ALL})
     private List<Course> courseList;
