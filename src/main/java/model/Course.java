@@ -9,18 +9,29 @@ import lombok.Setter;
 
 import java.util.List;
 
-@Entity
+
+
+
 @Getter
 @Setter
 @AllArgsConstructor
-@NoArgsConstructor
+
+@Entity(name = "course")
 public class Course extends BaseEntity<Long> {
 
-
+    @Column(nullable = false)
     private String name;
+
+    @Column(nullable = false)
     private Integer units;
+
+    @Column(name = "lesson_code", nullable = false)
     private Integer courseCode;
+
+    @Column(name = "year")
     private  Integer year;
+
+    @Column(nullable = false)
     private  Integer semester;
 
 
@@ -48,4 +59,19 @@ public class Course extends BaseEntity<Long> {
     @OneToMany(mappedBy = "course",cascade = CascadeType.ALL)
     private List<RegisterCourse> registerCourses;
 
+
+    public Course() {
+    }
+    @Override
+    public String toString() {
+        return "Course{" +
+                "name='" + name + '\'' +
+                ", units=" + units +
+                ", courseCode=" + courseCode +
+                ", year=" + year +
+                ", semester=" + semester +
+                ", professor=" + professor +
+                ", registerCourses=" + registerCourses +
+                '}';
+    }
 }
