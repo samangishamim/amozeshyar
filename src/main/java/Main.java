@@ -1,8 +1,5 @@
 import connection.SessionFactorySingleton;
-import model.Course;
-import model.Employee;
-import model.Professor;
-import model.ProfessorType;
+import model.*;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import service.courceServise.CourseService;
@@ -31,9 +28,13 @@ public class Main {
 //        session.getTransaction().commit();
 
 
-//        Employee employee=new Employee("shamim","darvishian","darvishian","123456",2000.0);
+//        Employee employee=new Employee("shamim","samangi","0023871695","aA@12345",2000.0);
 //        EmployeeService employeeService=ApplicationContext.getEmployeeService();
+//        employeeService.saveOrUpdate(employee);
 
 
+
+        Menu menu=new Menu();
+        menu.mainMenu();
     }
 }

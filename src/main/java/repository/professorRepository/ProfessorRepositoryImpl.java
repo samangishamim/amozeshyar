@@ -1,6 +1,7 @@
 package repository.professorRepository;
 
 import base.repository.BaseRepositoryImpl;
+import model.Employee;
 import model.Person;
 import model.Professor;
 import org.hibernate.Session;
@@ -8,6 +9,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 import repository.personRepository.PersonRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 public class ProfessorRepositoryImpl extends BaseRepositoryImpl<Professor,Long> implements ProfessorRepository {
@@ -29,15 +31,15 @@ public class ProfessorRepositoryImpl extends BaseRepositoryImpl<Professor,Long> 
 
 
     @Override
-    public Optional<Professor> professorSignIn(String nationalId, String password) {
+    public Optional<List<Professor>> professorSignIn(String nationalId, String password) {
         Session session = sessionFactory.getCurrentSession();
-        String hql ="FROM %s WHERE professorId=:professorId AND password=:password ";
-        Query<Professor> query = session.createQuery(String.format(hql , getMyClass()),getEntityClass());
-        query.setParameter("professorId", nationalId );
+        String hql ="FROM Professor p WHERE p.nationalId=:nationalId AND p.password=:password ";
+        Query<Professor> query = session.createQuery(hql , Professor.class);
+        query.setParameter("nationalId", nationalId );
         query.setParameter( "password" , password );
-        Object result = query.uniqueResult();
+        List<Professor> resultList = query.getResultList();
 
-        return Optional.ofNullable(query.getSingleResult());
+        return Optional.ofNullable(resultList);
     }
 
     @Override

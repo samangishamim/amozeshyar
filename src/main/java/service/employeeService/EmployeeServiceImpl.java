@@ -8,6 +8,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import repository.employessRepository.EmployeeRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 public class EmployeeServiceImpl extends BaseServiceImpl<Employee, Long, EmployeeRepository> implements EmployeeService {
@@ -18,15 +19,15 @@ public class EmployeeServiceImpl extends BaseServiceImpl<Employee, Long, Employe
     private final SessionFactory sessionFactory = SessionFactorySingleton.getInstance();
 
     @Override
-    public Optional<Employee> employeeSignIn(String nationalId, String password) {
+    public List<Employee> employeeSignIn(String nationalId, String password) {
         try (Session session = sessionFactory.getCurrentSession()) {
             session.beginTransaction();
-            Optional<Employee> find = repository.employeeSignIn(nationalId, password);
+            Optional<List<Employee>> find = repository.employeeSignIn(nationalId, password);
             find.orElseThrow(() -> new NotFoundException("Entity not found"));
             session.getTransaction().commit();
-            return find;
+            return find.get();
         } catch (Exception e) {
-            return Optional.empty();
+            return null;
         }
     }
 

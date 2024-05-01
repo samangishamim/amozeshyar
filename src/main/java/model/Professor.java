@@ -16,34 +16,51 @@ import java.util.Set;
 public class Professor extends Person {
 
 
-    @Column(name = "main_salary", nullable = false)
+
+
+    @Column(name = "main_salary")
     private Double basicSalary;
 
-    @Column(name = "pay_per_unit", nullable = false)
+    @Column(name = "pay_per_unit")
     private Double payPerUnit;
 
+    @Column(name = "number_of_semesters")
+    private Integer numberOfSemesters;
+
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
     private ProfessorType professorType;
 
-    public Professor(Long aLong,String firstName, String lastName, String username, String password, Double basicSalary,
-                     Double payPerUnit, ProfessorType professorType) {
-        super(firstName, lastName, username, password);
+    public Professor(Long aLong, String firstName, String lastName, String nationalid, String password, Double basicSalary,
+                     Double payPerUnit, Integer numberOfSemesters, ProfessorType professorType) {
+        super(aLong, firstName, lastName, nationalid, password);
         this.basicSalary = basicSalary;
         this.payPerUnit = payPerUnit;
-        this.professorType = professorType;
-    }
-    public Professor(String firstName, String lastName, String username, String password, Double basicSalary,
-                     Double payPerUnit, ProfessorType professorType) {
-        super(firstName, lastName, username, password);
-        this.basicSalary = basicSalary;
-        this.payPerUnit = payPerUnit;
+        this.numberOfSemesters = numberOfSemesters;
         this.professorType = professorType;
     }
 
+    public Professor(String firstName, String lastName, String nationalid, String password, Double basicSalary,
+                     Double payPerUnit, Integer numberOfSemesters, ProfessorType professorType) {
+        super(firstName, lastName, nationalid, password);
+        this.basicSalary = basicSalary;
+        this.payPerUnit = payPerUnit;
+        this.numberOfSemesters = numberOfSemesters;
+        this.professorType = professorType;
+    }
 
     @OneToMany(mappedBy = "professor", cascade = {CascadeType.ALL})
     private List<Course> courseList;
+
+    public Professor() {
+    }
+
+    public Professor(Long aLong, String firstName, String lastName, String nationalId, String password) {
+        super(aLong, firstName, lastName, nationalId, password);
+    }
+
+    public Professor(String firstName, String lastName, String nationalId, String password) {
+        super(firstName, lastName, nationalId, password);
+    }
 
     public void addCourse(Course course) {
         if (courseList == null) {
@@ -53,5 +70,14 @@ public class Professor extends Person {
         course.setProfessor(this);
     }
 
-
+    @Override
+    public String toString() {
+        return "Professor{" +
+                super.toString()+
+                "basicSalary=" + basicSalary +
+                ", payPerUnit=" + payPerUnit +
+                ", numberOfSemesters=" + numberOfSemesters +
+                ", professorType=" + professorType +
+                '}';
+    }
 }

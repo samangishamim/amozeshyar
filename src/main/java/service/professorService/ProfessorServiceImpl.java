@@ -3,6 +3,7 @@ package service.professorService;
 import base.service.BaseServiceImpl;
 import connection.SessionFactorySingleton;
 import exception.NotFoundException;
+import model.Employee;
 import model.Person;
 import model.Professor;
 import org.hibernate.Session;
@@ -20,15 +21,15 @@ public class ProfessorServiceImpl extends BaseServiceImpl<Professor, Long, Profe
     private final SessionFactory sessionFactory = SessionFactorySingleton.getInstance();
 
     @Override
-    public Optional<Professor> professorSignIn(String nationalId, String password) {
+    public List<Professor> professorSignIn(String nationalId, String password) {
         try (Session session = sessionFactory.getCurrentSession()) {
             session.beginTransaction();
-            Optional<Professor> find = repository.professorSignIn(nationalId, password);
+            Optional<List<Professor>> find = repository.professorSignIn(nationalId, password);
             find.orElseThrow(() -> new NotFoundException("Entity not found"));
             session.getTransaction().commit();
-            return find;
+            return find.get();
         } catch (Exception e) {
-            return Optional.empty();
+            return null;
         }
     }
 
