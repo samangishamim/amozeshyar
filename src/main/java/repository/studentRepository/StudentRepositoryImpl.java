@@ -2,6 +2,7 @@ package repository.studentRepository;
 
 import base.repository.BaseRepositoryImpl;
 import connection.SessionFactorySingleton;
+import model.Employee;
 import model.Person;
 import model.RegisterCourse;
 import model.Student;
@@ -29,26 +30,26 @@ public class StudentRepositoryImpl extends BaseRepositoryImpl<Student,Long> impl
     }
 
     @Override
-    public Optional<Student> studentSignIn(String studentId, String password) {
+    public Optional<List<Student>> studentSignIn(String nationalId, String password) {
         Session session = sessionFactory.getCurrentSession();
-        String hql ="FROM %s WHERE nationalid=:nationalid AND password=:password ";
-        Query<Student> query = session.createQuery(String.format(hql , getMyClass()),getEntityClass());
-        query.setParameter("studentId", studentId );
+        String hql ="FROM Student s WHERE s.nationalId=:nationalId AND s.password=:password ";
+        Query<Student> query = session.createQuery(hql , Student.class);
+        query.setParameter("nationalId", nationalId );
         query.setParameter( "password" , password );
-        Object result = query.uniqueResult();
+        List<Student> resultList = query.getResultList();
 
-        return Optional.ofNullable(query.getSingleResult());
+        return Optional.ofNullable(resultList);
     }
 
     @Override
-    public Optional<Student> studentInfo(String nationalId) {
+    public Optional<List<Student>> studentInfo(String nationalId) {
         Session session = sessionFactory.getCurrentSession();
         Query<Student> query = session.createQuery("FROM Student s  " +
-                " WHERE s.studentId=:studentId" , Student.class);
+                " WHERE s.nationalId=:nationalId" , Student.class);
         query.setParameter("nationalId", nationalId );
-        Student student = query.uniqueResult();
+        List<Student> resultList = query.getResultList();
 
-        return Optional.ofNullable(query.getSingleResult());
+        return Optional.ofNullable(resultList);
     }
 
     @Override

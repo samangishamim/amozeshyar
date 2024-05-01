@@ -3,6 +3,7 @@ package service.studentService;
 import base.service.BaseServiceImpl;
 import connection.SessionFactorySingleton;
 import exception.NotFoundException;
+import model.Employee;
 import model.RegisterCourse;
 import model.Student;
 import org.hibernate.Session;
@@ -19,28 +20,28 @@ public class StudentServiceImpl extends BaseServiceImpl<Student, Long, StudentRe
     private final SessionFactory sessionFactory = SessionFactorySingleton.getInstance();
 
     @Override
-    public Optional<Student> studentSignIn(String nationalId, String password) {
+    public List<Student> studentSignIn(String nationalId, String password) {
         try (Session session = sessionFactory.getCurrentSession()) {
             session.beginTransaction();
-            Optional<Student> find = repository.studentSignIn(nationalId, password);
+            Optional<List<Student>> find = repository.studentSignIn(nationalId, password);
             find.orElseThrow(() -> new NotFoundException("Entity not found"));
             session.getTransaction().commit();
-            return find;
+            return find.get();
         } catch (Exception e) {
-            return Optional.empty();
+            return null;
         }
     }
 
     @Override
-    public Optional<Student> studentInfo(String nationalId) {
+    public List<Student> studentInfo(String nationalId) {
          try (Session session = sessionFactory.getCurrentSession()) {
             session.beginTransaction();
-            Optional<Student> find = repository.studentInfo(nationalId);
+            Optional<List<Student>> find = repository.studentInfo(nationalId);
             find.orElseThrow(() -> new NotFoundException("Entity not found"));
             session.getTransaction().commit();
-            return find;
+            return find.get();
         } catch (Exception e) {
-            return Optional.empty();
+            return null;
         }
     }
 
