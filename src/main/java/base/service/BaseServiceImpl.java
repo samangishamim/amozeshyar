@@ -54,17 +54,17 @@ public class BaseServiceImpl<T extends BaseEntity<ID>,
     }
 
     @Override
-    public void delete(T t) {
-        Transaction transaction = null;
+    public void delete(ID id) {
         try (Session session = sessionFactory.getCurrentSession()) {
-            transaction = session.beginTransaction();
-            repository.delete(t);
-            transaction.commit();
-        } catch (Exception e) {
-            assert transaction != null;
-            transaction.rollback();
+            session.beginTransaction();
+            Optional<T> findEntity = repository.findById(id);
+            findEntity.orElseThrow(() -> new NotFoundException(String.format("Entity with id : %s not found", id)));
+            repository.delete(findEntity.get());
+            session.getTransaction().commit();
+        } catch (Exception ignored) {
         }
     }
+
 
     @Override
     public List<T> findAll() {

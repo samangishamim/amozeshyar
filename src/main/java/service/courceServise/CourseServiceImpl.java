@@ -44,7 +44,15 @@ public class CourseServiceImpl extends BaseServiceImpl<Course,Long,CourseReposit
     }
 
     @Override
-    public boolean findCourseByIdOfCourse(int year, int semester, int idOfCourse) {
-        return repository.findCourseByIdOfCourse(year, semester, idOfCourse);
+    public Optional<Course> findByCourseCode(Integer courseCode) {
+        try (Session session = sessionFactory.getCurrentSession()) {
+            session.beginTransaction();
+            Optional<Course> find = repository.findByCourseCode(courseCode);
+            find.orElseThrow(() -> new NotFoundException("Entity not found"));
+            session.getTransaction().commit();
+            return find;
+        } catch (Exception e) {
+            return Optional.empty();
+        }
     }
 }

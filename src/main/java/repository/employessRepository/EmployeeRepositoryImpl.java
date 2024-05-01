@@ -31,15 +31,15 @@ public class  EmployeeRepositoryImpl extends BaseRepositoryImpl<Employee,Long> i
 
 
     @Override
-    public Optional<Employee> employeeSignIn(String username, String password) {
+    public Optional<List<Employee>> employeeSignIn(String nationalId, String password) {
         Session session = sessionFactory.getCurrentSession();
-        String hql ="FROM %s WHERE username=:username AND password=:password ";
-        Query<Employee> query = session.createQuery(String.format(hql , getMyClass()),getEntityClass());
-        query.setParameter("username", username );
+        String hql ="FROM Employee e WHERE e.nationalId=:nationalId AND e.password=:password ";
+        Query<Employee> query = session.createQuery(hql,Employee.class);
+        query.setParameter("nationalId", nationalId );
         query.setParameter( "password" , password );
-        Object result = query.uniqueResult();
+        List<Employee> resultList = query.getResultList();
 
-        return Optional.ofNullable(query.getSingleResult());
+        return Optional.ofNullable(resultList);
     }
 
     @Override

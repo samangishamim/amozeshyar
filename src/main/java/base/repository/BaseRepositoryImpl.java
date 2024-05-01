@@ -31,7 +31,8 @@ public abstract class BaseRepositoryImpl<T extends BaseEntity<ID>
     @Override
     public Optional<T> findById(ID id) {
         Session session = sessionFactory.getCurrentSession();
-        return Optional.ofNullable(session.get(getEntityClass(), id));
+        T t = session.get(getEntityClass(), id);
+       return Optional.ofNullable(t);
     }
 
     public abstract Class<T> getEntityClass();
@@ -46,7 +47,7 @@ public abstract class BaseRepositoryImpl<T extends BaseEntity<ID>
     public List<T> findAll() {
         try (Session session = sessionFactory.getCurrentSession()) {
             session.beginTransaction();
-            Query<T> query = session.createQuery(String.format("FROM %S", getClass()), getEntityClass());
+            Query<T> query = session.createQuery(String.format("FROM %s", getMyClass()), getEntityClass());
             List<T> resultList = query.getResultList();
             session.getTransaction().commit();
             return resultList;

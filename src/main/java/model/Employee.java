@@ -16,23 +16,33 @@ import lombok.Setter;
 
 @Entity
 public class Employee extends Person {
-    @Column(nullable = false)
+
     private Double salary;
 
-
-    public Employee(Long aLong, String firstName, String lastName, String username, String password) {
-        super(aLong, firstName, lastName, username, password);
+    public Employee() {
     }
 
-    public Employee(String firstName, String lastName, String username, String password) {
-        super(firstName, lastName, username, password);
+    public Employee(Long aLong, String firstName, String lastName, String nationalId, String password) {
+        super(aLong, firstName, lastName, nationalId, password);
+    }
+
+    public Employee(String firstName, String lastName, String nationalId, String password) {
+        super(firstName, lastName, nationalId, password);
+    }
+
+    public Employee(Long aLong, String firstName, String lastName, String nationalId, String password, Double salary) {
+        super(aLong, firstName, lastName, nationalId, password);
+        this.salary = salary;
+    }
+    public Employee(String firstName, String lastName, String nationalId, String password, Double salary) {
+        super(firstName, lastName, nationalId, password);
+        this.salary = salary;
     }
 
     @Override
     public String toString() {
-        return "Employee{" +
+        return "Employee{" + super.toString()+
                 "salary=" + salary +
-                ", id=" + id +
                 '}';
     }
 }

@@ -53,6 +53,8 @@ public class ApplicationContext {
     private static final RegisterCourseRepository REGISTER_COURSE_REPOSITORY;
     private static final RegisterCourseService REGISTER_COURSE_SERVICE;
 
+
+
     static {
         SESSION_FACTORY = SessionFactorySingleton.getInstance();
 
@@ -73,6 +75,7 @@ public class ApplicationContext {
 
         REGISTER_COURSE_REPOSITORY = new RegisterCourseRepositoryImpl(SESSION_FACTORY) ;
         REGISTER_COURSE_SERVICE = new RegisterCourseServiceImpl(REGISTER_COURSE_REPOSITORY, SESSION_FACTORY);
+
 
     }
 

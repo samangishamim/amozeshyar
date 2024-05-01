@@ -10,7 +10,7 @@ public interface BaseService <T extends BaseEntity<ID>, ID extends Serializable>
 
     T findById(ID id);
 
-    void delete(T t);
+    void delete(ID id);
 
    List<T> findAll ();
 }

@@ -44,7 +44,7 @@ public class CourseRepositoryImpl extends BaseRepositoryImpl<Course, Long> imple
     @Override
     public Optional<List<Course>> findCourseByYearAndSemesterAndProfessorId(int year, int semester, Long professorId) {
         Session session = sessionFactory.getCurrentSession();
-        Query<Course> query = session.createQuery("FROM course c " +
+        Query<Course> query = session.createQuery("FROM Course c " +
                 "WHERE c.year = :year AND c.semester = :semester", Course.class);
         query.setParameter("year", year);
         query.setParameter("semester", semester);
@@ -72,7 +72,7 @@ public class CourseRepositoryImpl extends BaseRepositoryImpl<Course, Long> imple
     @Override
     public Optional<Long> professorSemesterSalary(Professor professor, int semester) {
         Session session = sessionFactory.getCurrentSession();
-        Query<Long> query = session.createQuery("select sum (c.units) FROM course c\n" +
+        Query<Long> query = session.createQuery("select sum (c.units) FROM Course c\n" +
                 "                 WHERE c.professor_id=:professor AND c.semester=:semester"+Long.class);
         query.setParameter("professor",professor);
         query.setParameter("semester",semester);
@@ -81,17 +81,13 @@ public class CourseRepositoryImpl extends BaseRepositoryImpl<Course, Long> imple
     }
 
     @Override
-    public boolean findCourseByIdOfCourse(int year, int semester, int idOfCourse) {
-        try(Session session = sessionFactory.getCurrentSession()) {
-            session.beginTransaction();
-            Query query = session.createQuery("FROM Course c WHERE c.courseCode = :courseCode AND " +
-                    "c.year = :year AND c.semester = :semester");
-            query.setParameter("idOfCourse", idOfCourse);
-            query.setParameter("year", year);
-            query.setParameter("semester", semester);
-            boolean empty = query.getResultList().isEmpty();
-            session.getTransaction().commit();
-            return empty;
-        }
+    public Optional<Course> findByCourseCode(Integer courseCode) {
+        Session session = sessionFactory.getCurrentSession();
+        Query<Course> query = session.createQuery("FROM  Course c  " +
+                " WHERE c.courseCode=:courseCodee" , Course.class);
+        query.setParameter("courseCode", courseCode );
+        Course course = query.uniqueResult();
+
+        return Optional.ofNullable(query.getSingleResult());
     }
 }

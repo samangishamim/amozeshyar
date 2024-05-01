@@ -2,10 +2,7 @@ package model;
 
 import base.entity.BaseEntity;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 
@@ -16,40 +13,49 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 
+
 @Entity(name = "course")
 public class Course extends BaseEntity<Long> {
 
-    @Column(nullable = false)
+
     private String name;
 
-    @Column(nullable = false)
     private Integer units;
 
-    @Column(name = "lesson_code", nullable = false)
+    @Column(name = "lesson_code")
     private Integer courseCode;
 
-    @Column(name = "year")
-    private  Integer year;
 
-    @Column(nullable = false)
+    private Integer capacity;
+
+
     private  Integer semester;
 
 
-    public Course(Long aLong, String name, Integer units, Integer courseCode, Integer year, Integer semester) {
+    public Course(Long aLong, String name, Integer units, Integer courseCode, Integer capacity, Integer semester) {
         super(aLong);
         this.name = name;
         this.units = units;
         this.courseCode = courseCode;
-        this.year = year;
+        this.capacity = capacity;
         this.semester = semester;
     }
 
-    public Course(String name, Integer units, Integer courseCode, Integer year, Integer semester) {
+    public Course(String name, Integer units, Integer courseCode, Integer capacity, Integer semester) {
         this.name = name;
         this.units = units;
         this.courseCode = courseCode;
-        this.year = year;
+        this.capacity = capacity;
         this.semester = semester;
+    }
+    public Course(Long aLong, String name, Integer units, Integer courseCode,  Integer capacity,Integer semester, Professor professor) {
+        super(aLong);
+        this.name = name;
+        this.units = units;
+        this.courseCode = courseCode;
+        this.semester = semester;
+        this.capacity = capacity;
+        this.professor = professor;
     }
 
     @ManyToOne
@@ -68,7 +74,7 @@ public class Course extends BaseEntity<Long> {
                 "name='" + name + '\'' +
                 ", units=" + units +
                 ", courseCode=" + courseCode +
-                ", year=" + year +
+                ", capacity=" + capacity +
                 ", semester=" + semester +
                 ", professor=" + professor +
                 ", registerCourses=" + registerCourses +
