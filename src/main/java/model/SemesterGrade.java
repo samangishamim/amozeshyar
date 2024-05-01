@@ -25,7 +25,7 @@ public class SemesterGrade extends BaseEntity<Long> {
     @Column(nullable = false)
     private Double semester;
 
-    @Column(name = "final_score", nullable = false)
+    @Column(name = "final_score")
     private Double finalScore;
 
     @Override
