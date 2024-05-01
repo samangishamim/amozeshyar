@@ -1,10 +1,7 @@
 package model;
 
 import base.entity.BaseEntity;
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
@@ -17,24 +14,27 @@ import lombok.*;
 
 public class RegisterCourse  extends BaseEntity<Long> {
 
-    private double mark;
-    private boolean isPassed;
+
+    private double grade;
+
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "course_situation")
+    private CourseGrade courseGrade;
     private Long studentId;
     private Long courseId;
 
-    public RegisterCourse(Long aLong, double mark, boolean isPassed, Long studentId, Long courseId, Student student, Course course) {
+    public RegisterCourse(Long aLong, double grade, Long studentId, Long courseId, Student student, Course course) {
         super(aLong);
-        this.mark = mark;
-        this.isPassed = isPassed;
+        this.grade = grade;
         this.studentId = studentId;
         this.courseId = courseId;
         this.student = student;
         this.course = course;
     }
 
-    public RegisterCourse(double mark, boolean isPassed, Long studentId, Long courseId, Student student, Course course) {
-        this.mark = mark;
-        this.isPassed = isPassed;
+    public RegisterCourse(double grade, Long studentId, Long courseId, Student student, Course course) {
+        this.grade = grade;
         this.studentId = studentId;
         this.courseId = courseId;
         this.student = student;
@@ -48,4 +48,13 @@ public class RegisterCourse  extends BaseEntity<Long> {
     @ManyToOne
     @JoinColumn(name="course_id",insertable = false,updatable = false)
     private Course course;
+
+    public RegisterCourse(Long aLong, Double grade, CourseGrade courseGrade) {
+        super(aLong);
+        this.grade = grade;
+        this.courseGrade = courseGrade;
+    }
+
+    public RegisterCourse(Student student1, Course course, double v, CourseGrade courseGrade) {
+    }
 }
