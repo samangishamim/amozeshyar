@@ -21,6 +21,7 @@ public class SessionFactorySingleton {
                     .addAnnotatedClass(Course.class)
                     .addAnnotatedClass(CourseGrade.class)
                     .addAnnotatedClass(Professor.class)
+                    .addAnnotatedClass(ProfessorType.class)
                     .addAnnotatedClass(Student.class)
                     .addAnnotatedClass(Employee.class)
                     .addAnnotatedClass(RegisterCourse.class)
