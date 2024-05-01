@@ -40,5 +40,17 @@ public class RegisterCourseServiceImpl extends BaseServiceImpl<RegisterCourse, L
             return Optional.empty();
         }
     }
+
+    @Override
+    public double getGPA(int year, int semester, Long studentId) {
+        try (Session session = sessionFactory.getCurrentSession()) {
+            session.beginTransaction();
+            double gpa = repository.getGPA(year, semester, studentId);
+            session.getTransaction().commit();
+            return gpa;
+        } catch (Exception ignored) {
+        }
+        return 0;
+    }
 }
 
