@@ -11,22 +11,19 @@ import repository.courseRepository.CourseRepository;
 import java.util.List;
 import java.util.Optional;
 
-public class CourseServiceImpl extends BaseServiceImpl<Course,Long,CourseRepository>implements CourseService{
+public class CourseServiceImpl extends BaseServiceImpl<Course, Long, CourseRepository> implements CourseService {
     public CourseServiceImpl(CourseRepository repository, SessionFactory sessionFactory) {
         super(repository, sessionFactory);
     }
 
 
-
-
     @Override
     public void addCourse(Course course, Long professorId) {
-        try(Session session=sessionFactory.getCurrentSession()){
+        try (Session session = sessionFactory.getCurrentSession()) {
             session.beginTransaction();
-            repository.addCourse(course,professorId);
+            repository.addCourse(course, professorId);
             session.getTransaction().commit();
-        }catch (Exception e)
-        {
+        } catch (Exception e) {
 
         }
     }
@@ -35,7 +32,7 @@ public class CourseServiceImpl extends BaseServiceImpl<Course,Long,CourseReposit
     public Optional<Long> professorSemesterSalary(Professor professor, int semester) {
         try (Session session = sessionFactory.getCurrentSession()) {
             session.beginTransaction();
-            Optional<Long> find = repository.professorSemesterSalary(professor,semester);
+            Optional<Long> find = repository.professorSemesterSalary(professor, semester);
             find.orElseThrow(() -> new NotFoundException("Entity not found"));
             session.getTransaction().commit();
             return find;
@@ -57,18 +54,18 @@ public class CourseServiceImpl extends BaseServiceImpl<Course,Long,CourseReposit
         }
     }
 
+
     @Override
-    public List<Course> findCoursesByYearAndSemesterAndProfessorId(int year, int semester, Long professorId) {
+    public List<Course> findByProfessorIdAndSemester(Long id, int semester) {
         try (Session session = sessionFactory.getCurrentSession()) {
             session.beginTransaction();
-            Optional<List<Course>> optionalCourseList =
-                    repository.findCourseByYearAndSemesterAndProfessorId(year, semester, professorId);
+            Optional<List<Course>> optionalCourseList = repository.findByProfessorIdAndSemester(semester, id);
             optionalCourseList.orElseThrow(
                     () -> new NotFoundException(
-                            String.format("Course/courses with year: %s semester: %s for professor id: %s not found",
-                                    year, semester, professorId))
+                            String.format("Course/courses with semester: %s for professor id: %s not found",
+                                    semester, id))
             );
-            return optionalCourseList.get();
+           return optionalCourseList.get();
         } catch (Exception e) {
             e.printStackTrace();
             return null;

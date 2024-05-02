@@ -42,15 +42,15 @@ public class CourseRepositoryImpl extends BaseRepositoryImpl<Course, Long> imple
     }
 
     @Override
-    public Optional<List<Course>> findCourseByYearAndSemesterAndProfessorId(int year, int semester, Long professorId) {
+    public Optional<List<Course>> findByProfessorIdAndSemester( int semester, Long professorId) {
         Session session = sessionFactory.getCurrentSession();
         Query<Course> query = session.createQuery("FROM course c " +
-                "WHERE  c.semester = :semester", Course.class);
-        query.setParameter("year", year);
+                "WHERE  c.semester = :semester ", Course.class);
         query.setParameter("semester", semester);
-        List<Course> resultList = query.getResultList();
+        List<Course> courseList = query.getResultList();
+
         List<Course> newList = new ArrayList<>();
-        for (Course course : resultList) {
+        for (Course course : courseList) {
             if (Objects.equals(course.getProfessor().getId(), professorId)) {
                 newList.add(course);
             }

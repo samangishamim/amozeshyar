@@ -11,7 +11,7 @@ public interface CourseRepository extends BaseRepository<Course, Long> {
 
 void addCourse(Course course,Long professorId);
 
-    Optional<List<Course>> findCourseByYearAndSemesterAndProfessorId(int year, int semester, Long professorId);
+    Optional<List<Course>> findByProfessorIdAndSemester( int semester, Long professorId);
     Optional<List<Course>> findCourseByYearAndSemester(int year, int semester);
     public Optional<Long> professorSemesterSalary(Professor professor, int semester);
 
