@@ -2,7 +2,6 @@ package repository.courseRepository;
 
 import base.repository.BaseRepository;
 import model.Course;
-import model.Person;
 import model.Professor;
 
 import java.util.List;
@@ -17,5 +16,5 @@ void addCourse(Course course,Long professorId);
     public Optional<Long> professorSemesterSalary(Professor professor, int semester);
 
 
-    public Optional<Course> findByCourseCode(Integer courseCode);
+    public Optional<List<Course>> findBySemester(Integer semester);
 }
