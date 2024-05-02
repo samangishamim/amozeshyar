@@ -10,7 +10,7 @@ import java.util.Optional;
 
 public interface StudentService extends BaseService<Student, Long> {
     public List<Student> studentSignIn(String nationalId, String password);
-    public List<Student> studentInfo(String nationalId);
+    public Optional<Student> studentInfo(String nationalId);
     List<RegisterCourse> getListOfStudentCourse(Long studentId, int year, int semester);
     boolean checkNationalIdAndPassword(String nationalId, String password);
 }

@@ -11,7 +11,7 @@ import java.util.Optional;
 
 public interface StudentRepository extends BaseRepository<Student,Long> {
     public Optional<List<Student>> studentSignIn(String studentId , String password);
-    public Optional<List<Student>> studentInfo(String studentId);
+    public Optional<Student> studentInfo(String studentId);
     boolean checkNationalIdAndPassword(String nationalId, String password);
     Optional<List<RegisterCourse>> getListOfStudentCourse(Long studentId, int year, int semester);
 }

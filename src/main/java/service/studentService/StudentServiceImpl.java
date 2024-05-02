@@ -3,7 +3,6 @@ package service.studentService;
 import base.service.BaseServiceImpl;
 import connection.SessionFactorySingleton;
 import exception.NotFoundException;
-import model.Employee;
 import model.RegisterCourse;
 import model.Student;
 import org.hibernate.Session;
@@ -33,15 +32,15 @@ public class StudentServiceImpl extends BaseServiceImpl<Student, Long, StudentRe
     }
 
     @Override
-    public List<Student> studentInfo(String nationalId) {
-         try (Session session = sessionFactory.getCurrentSession()) {
+    public Optional<Student> studentInfo(String nationalId) {
+        try (Session session = sessionFactory.getCurrentSession()) {
             session.beginTransaction();
-            Optional<List<Student>> find = repository.studentInfo(nationalId);
+            Optional<Student> find = repository.studentInfo(nationalId);
             find.orElseThrow(() -> new NotFoundException("Entity not found"));
             session.getTransaction().commit();
-            return find.get();
+            return find;
         } catch (Exception e) {
-            return null;
+            return Optional.empty();
         }
     }
 

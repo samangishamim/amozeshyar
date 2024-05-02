@@ -42,14 +42,14 @@ public class StudentRepositoryImpl extends BaseRepositoryImpl<Student,Long> impl
     }
 
     @Override
-    public Optional<List<Student>> studentInfo(String nationalId) {
+    public Optional<Student> studentInfo(String nationalId) {
         Session session = sessionFactory.getCurrentSession();
         Query<Student> query = session.createQuery("FROM Student s  " +
                 " WHERE s.nationalId=:nationalId" , Student.class);
         query.setParameter("nationalId", nationalId );
-        List<Student> resultList = query.getResultList();
+        Student student = query.uniqueResult();
 
-        return Optional.ofNullable(resultList);
+        return Optional.ofNullable(query.getSingleResult());
     }
 
     @Override
