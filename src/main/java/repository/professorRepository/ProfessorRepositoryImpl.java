@@ -45,12 +45,12 @@ public class ProfessorRepositoryImpl extends BaseRepositoryImpl<Professor,Long> 
     @Override
     public Optional<Professor> professorInfo(String nationalId) {
         Session session = sessionFactory.getCurrentSession();
-        Query<Professor> query = session.createQuery("FROM Professor p  " +
-                " WHERE p.professorId=:professorId" , Professor.class);
-        query.setParameter("professorId", nationalId );
-        Professor professor = query.uniqueResult();
-
-        return Optional.ofNullable(query.getSingleResult());
+        Query<Professor> query = session.createQuery("FROM Professor p WHERE p.nationalId = :theNationalId", Professor.class);
+        List<Professor> resultList = query.setParameter("theNationalId", nationalId).getResultList();
+        if (resultList.size() == 0) {
+            return Optional.empty();
+        }
+        return Optional.of(resultList.get(0));
     }
 
 

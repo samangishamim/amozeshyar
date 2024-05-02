@@ -31,9 +31,9 @@ public class RegisterCourseRepositoryImpl extends BaseRepositoryImpl<RegisterCou
     @Override
     public List<RegisterCourse> listStudentLessonsWithGrade(Student student) {
         Session session = sessionFactory.getCurrentSession();
-        Query<RegisterCourse> query = session.createQuery("FROM register_courses r" +
-                " WHERE r.student_id=:student", RegisterCourse.class);
-        query.setParameter("student", student);
+        Query<RegisterCourse> query = session.createQuery("SELECT r FROM RegisterCourse r" +
+                " WHERE r.studentId=:studentId", RegisterCourse.class);
+        query.setParameter("studentId", student.getId());
         List<RegisterCourse> registerCourseList = query.getResultList();
         return registerCourseList;
     }
@@ -41,10 +41,10 @@ public class RegisterCourseRepositoryImpl extends BaseRepositoryImpl<RegisterCou
     @Override
     public Optional<RegisterCourse> checkDoublLessonInOneSemster(Student student, Course course) {
         Session session = sessionFactory.getCurrentSession();
-        Query<RegisterCourse> query = session.createQuery("FROM register_courses r " +
+        Query<RegisterCourse> query = session.createQuery("FROM RegisterCourse r " +
                 " WHERE r.studentid=:student and r.courseid=:course", RegisterCourse.class);
-        query.setParameter("student", student);
-        query.setParameter("course", course);
+        query.setParameter("student", student.getId());
+        query.setParameter("course", course.getId());
         List<RegisterCourse> registerCourseList = query.getResultList();
 
         return Optional.ofNullable(query.getSingleResult());
@@ -54,7 +54,7 @@ public class RegisterCourseRepositoryImpl extends BaseRepositoryImpl<RegisterCou
     public double getGPA(int year, int semester, Long studentId) {
         Session session = sessionFactory.getCurrentSession();
         Query query = session.createQuery("SELECT (SUM(e.mark * c.units) / SUM(c.units))" +
-                " FROM register_courses e " +
+                " FROM RegisterCourse e " +
                 "JOIN e.course c " +
                 "ON e.courseId = c.id " +
                 "WHERE e.studentId = :sId ");

@@ -8,7 +8,6 @@ import lombok.*;
 @Getter
 @Setter
 @NoArgsConstructor
-@ToString
 
 @Table(name = "register_courses")
 
@@ -41,6 +40,13 @@ public class RegisterCourse  extends BaseEntity<Long> {
         this.course = course;
     }
 
+    public RegisterCourse(double grade, CourseGrade courseGrade, Long studentId, Long courseId) {
+        this.grade = grade;
+        this.courseGrade = courseGrade;
+        this.studentId = studentId;
+        this.courseId = courseId;
+    }
+
     @ManyToOne
     @JoinColumn(name="student_id",insertable = false,updatable = false)
     private Student student;
@@ -55,6 +61,15 @@ public class RegisterCourse  extends BaseEntity<Long> {
         this.courseGrade = courseGrade;
     }
 
-    public RegisterCourse(Student student1, Course course, double v, CourseGrade courseGrade) {
+    @Override
+    public String toString() {
+        return "RegisterCourse{" +
+                "grade=" + grade +
+                ", courseGrade=" + courseGrade +
+                ", studentId=" + studentId +
+                ", courseId=" + courseId +
+                ", student=" + student +
+                ", course=" + course +
+                '}'+ super.toString();
     }
 }
