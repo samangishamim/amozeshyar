@@ -82,39 +82,7 @@ public class Menu {
             switch (numberInput) {
                 case 1 -> studentInfo(nationalId);
                 case 2 -> listPresentedLessons();
-                case 3 -> {
-                    int semesterChoose = 0;
-                    try {
-                        System.out.println("Which semester do you want to choose from?");
-                        semesterChoose = scanner.nextInt();
-                        scanner.nextLine();
-                    } catch (InputMismatchException e) {
-                        System.out.println("Invalid input. Please enter a valid semester number.");
-                        scanner.nextLine();
-                        studentMenu(nationalId);
-                    }
-
-                    List<Student> student = studentService.studentInfo(nationalId);
-                    Student student1 = student.get();
-                    System.out.println("Student : " + student1);
-
-                    int courseCode = 0;
-                    try {
-                        System.out.println("Enter your needed course code :");
-                        courseCode = scanner.nextInt();
-                        scanner.nextLine();
-                    } catch (NoSuchElementException e) {
-                        System.out.println("Invalid input. Please enter a valid number.");
-                        scanner.nextLine();
-                        studentMenu(nationalId);
-                    }
-
-                    Optional<Course> BycoursecCode = courseService.findByCourseCode(courseCode);
-                    Course course = BycoursecCode.get();
-                    System.out.println("name : " + course.getName());
-
-                    checkForLessonSituation(nationalId, course, student1, semesterChoose);
-                }
+                case 3 -> chooseCourse(nationalId);
                 case 4 -> showlessonsWithGrade(nationalId);
                 case 0 -> System.out.println("Bye Bye");
                 default -> System.out.println("Wrong input");
@@ -122,13 +90,39 @@ public class Menu {
         }
     }
 
+    private void chooseCourse(String nationalId) {
+        int semesterChoose = 0;
+        Optional<Student> student = studentService.studentInfo(nationalId);
+        if (student.isPresent()) {
+            Student student1 = student.get();
+            System.out.println("Student : " + student1);
+            try {
+                System.out.println("Which semester do you want to choose from?");
+                semesterChoose =Integer.parseInt(scanner.nextLine());
+            } catch (InputMismatchException e) {
+                System.out.println("Invalid input. Please enter a valid semester number.");
+            }
+            List<Course> byLessonCode = courseService.findBySemester(semesterChoose);
+            if (byLessonCode != null) {
+                Course lesson = byLessonCode.get(0);
+                System.out.println("name : " + lesson.getName());
+                checkForLessonSituation(nationalId, lesson, student1, semesterChoose);
+            } else {
+                System.out.println("Lesson not found this semester : " + semesterChoose);
+                chooseCourse(nationalId);
+            }
+        } else {
+            System.out.println("Student not found with national ID: " + nationalId);
+            studentMenu(nationalId);
+        }
+
+    }
+
     private void studentInfo(String nationalId) {
-        Long studentId = SecurityContext.getAuthentication().getId();
-        StudentService studentService = ApplicationContext.getStudentService();
-        Student sf = studentService.findById(studentId);
-        System.out.println("Id: " + sf.getId() +
-                "\nName: " + sf.getFirstName() + " " + sf.getLastName() +
-                "\nNational id: " + sf.getNationalId());
+        Optional<Student> student = studentService.studentInfo(nationalId);
+        Student student1 = student.get();
+        System.out.println("name : " + student1.getFirstName() + " " + student1.getLastName() +
+                " national id : " + student1.getNationalId());
     }
 
     private void checkForLessonSituation(String nationalId, Course course, Student student1, int semesterChoose) {
@@ -137,18 +131,19 @@ public class Menu {
 
 
         if (course.getSemester() == semesterChoose) {
-            checkLessonCapacity(nationalId, capacity, course);
-            if (registerCourse.isPresent() && registerCourse.get().getCourseGrade().equals(CourseGrade.FAILED)) {
+            boolean capFlag = checkLessonCapacity(nationalId, capacity, course);
+            if (capFlag && registerCourse.isPresent() && registerCourse.get().getCourseGrade().equals(CourseGrade.FAILED)) {
 
-                registerCourseService.saveOrUpdate(new RegisterCourse(student1, course, 0D, CourseGrade.NO_VALUE));
+                registerCourseService.saveOrUpdate(new RegisterCourse(0D,CourseGrade.NO_VALUE, student1.getId(), course.getId()));
 
             } else if (registerCourse.isPresent() && registerCourse.get().getCourseGrade().equals(CourseGrade.PASSED)) {
 
                 System.out.println("You passed this lesson before");
                 studentMenu(nationalId);
 
-            } else {
-                registerCourseService.saveOrUpdate(new RegisterCourse(student1, course, 0D, CourseGrade.NO_VALUE));
+            }
+            else {
+                registerCourseService.saveOrUpdate(new RegisterCourse(0D,CourseGrade.NO_VALUE, student1.getId(), course.getId()));
             }
         } else {
             System.out.println("You choose wrong semester");
@@ -156,14 +151,15 @@ public class Menu {
         }
     }
 
-    private void checkLessonCapacity(String nationalId, Integer capacity, Course course) {
+    private boolean checkLessonCapacity(String nationalId, Integer capacity, Course course) {
         if (capacity > 0) {
             capacity = capacity - 1;
             course.setCapacity(capacity);
             courseService.saveOrUpdate(course);
+            return true;
         } else {
             System.out.println("the course have not capacity !!!");
-            studentMenu(nationalId);
+            return false;
         }
     }
 
@@ -181,12 +177,14 @@ public class Menu {
     }
 
     private void listPresentedLessons() {
-        List<Course> all = courseService.findAll();
-        for (Course course : all) {
-            System.out.println("Name : " + course.getName() + " Lesson Code : " + course.getCourseCode() +
-                    " Teacher name : " + course.getProfessor().getLastName() +
-                    " lesson Capacity : " + course.getCapacity() + " unit : " + course.getUnits() +
-                    " semester : " + course.getSemester());
+        List<Course> courseList = courseService.findAll();
+        System.out.println();
+        System.out.println("***** list of courses *****");
+        for (Course course : courseList) {
+            System.out.println("Term: ( " + course.getName() +
+                    " - " + course.getSemester() +
+                    " ) - " + course.getCapacity() + " - "
+                    + "units: " + course.getUnits());
         }
     }
 
@@ -253,7 +251,8 @@ public class Menu {
 
                     CourseGrade courseGrade;
 
-                    RegisterCourse registerCourse = registerCourseService.findById(id);
+                    Optional<RegisterCourse> registerCourseServiceById = registerCourseService.findById(id);
+                    RegisterCourse registerCourse = registerCourseServiceById.get();
 
 
                     if (grade < 20 || grade > 0) {
@@ -276,7 +275,28 @@ public class Menu {
         }
     }
 
+    private void insertMarkByProfessor(List<Course> courseList) {
+        Scanner scanner = new Scanner(System.in);
+        for (Course course : courseList) {
+            System.out.println("Enter the grades for course: " + course.getName());
+            List<RegisterCourse> registerCourses = course.getRegisterCourses();
+            for (RegisterCourse registerCourse : registerCourses) {
+                System.out.println("Enter the grade for student: " + registerCourse.getStudent().getFirstName() + " " + registerCourse.getStudent().getLastName());
+                double grade = scanner.nextDouble();
+                if (grade < 0 || grade > 20) {
+                    System.out.println("Invalid grade. Please enter a grade between 0 and 20.");
+                    insertMarkByProfessor(courseList);
+                    return;
+                }
+                registerCourse.setGrade(grade);
+                registerCourse.setCourseGrade(CourseGrade.PASSED);
+                registerCourseService.saveOrUpdate(registerCourse);
+            }
+        }
+    }
+
     private void professorInfo(String nationalId) {
+
         Optional<Professor> professor = professorService.professorInfo(nationalId);
         Professor professor1 = professor.get();
         System.out.println("name : " + professor1.getFirstName() + " " + professor1.getLastName() + " national id : " +
@@ -354,19 +374,39 @@ public class Menu {
     }
 
     private void employeeSalary(String nationalId) {
-        Optional<Employee> employee = employeeService.employeeSalary(nationalId);
-        Employee employee1 = employee.get();
-        System.out.println("name : " + employee1.getFirstName() + " " + employee1.getLastName() +
-                " national id : " + employee1.getNationalId() + " salary : " + employee1.getSalary());
+
+        Optional<Employee> employee1 = employeeService.employeeSalary(nationalId);
+        if (employee1.isPresent()){
+            System.out.println("name : " + employee1.get().getFirstName() + " " + employee1.get().getLastName() +
+
+                    " national id : " + employee1.get().getNationalId() + " salary : " + employee1.get().getSalary());
+        }else
+            System.out.println("this employee with nationalId: " + nationalId+ " not found" );
     }
 
     private void deleteCourse() {
         List<Course> courseList = courseService.findAll();
+
         System.out.println(courseList);
+
         System.out.println("** Delete Lesson **");
+
         System.out.println("Please Enter id :");
+
+
+        while (!scanner.hasNextLong()) {
+
+            System.out.println("Invalid input. Please enter a valid ID:");
+
+            scanner.next();
+
+        }
+
+
         Long id = scanner.nextLong();
+
         scanner.nextLine();
+
 
         courseService.delete(id);
     }
@@ -382,7 +422,7 @@ public class Menu {
 
             List<Professor> student = professorService.professorSignIn(nationalId, password);
 
-            if (student !=null ) {
+            if (student != null) {
                 System.out.println("Welcome " + nationalId);
                 return nationalId;
             } else
