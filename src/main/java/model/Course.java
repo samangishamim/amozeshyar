@@ -77,7 +77,6 @@ public class Course extends BaseEntity<Long> {
                 ", capacity=" + capacity +
                 ", semester=" + semester +
                 ", professor=" + professor +
-                ", registerCourses=" + registerCourses +
-                '}';
+                '}'+ super.toString();
     }
 }
