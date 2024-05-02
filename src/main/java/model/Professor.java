@@ -51,6 +51,8 @@ public class Professor extends Person {
     @OneToMany(mappedBy = "professor", cascade = {CascadeType.ALL})
     private List<Course> courseList;
 
+
+
     public Professor() {
     }
 

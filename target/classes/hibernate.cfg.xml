@@ -13,5 +13,7 @@
   <property name="hibernate.format_sql">false</property>
   <property name="hibernate.current_session_context_class">thread</property>
 
+  <mapping class="model.Course"/>
+  <mapping class="model.Professor"/>
 </session-factory>
 </hibernate-configuration>

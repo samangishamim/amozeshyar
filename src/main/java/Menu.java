@@ -98,7 +98,7 @@ public class Menu {
             System.out.println("Student : " + student1);
             try {
                 System.out.println("Which semester do you want to choose from?");
-                semesterChoose =Integer.parseInt(scanner.nextLine());
+                semesterChoose = Integer.parseInt(scanner.nextLine());
             } catch (InputMismatchException e) {
                 System.out.println("Invalid input. Please enter a valid semester number.");
             }
@@ -134,16 +134,15 @@ public class Menu {
             boolean capFlag = checkLessonCapacity(nationalId, capacity, course);
             if (capFlag && registerCourse.isPresent() && registerCourse.get().getCourseGrade().equals(CourseGrade.FAILED)) {
 
-                registerCourseService.saveOrUpdate(new RegisterCourse(0D,CourseGrade.NO_VALUE, student1.getId(), course.getId()));
+                registerCourseService.saveOrUpdate(new RegisterCourse(0D, CourseGrade.NO_VALUE, student1.getId(), course.getId()));
 
             } else if (registerCourse.isPresent() && registerCourse.get().getCourseGrade().equals(CourseGrade.PASSED)) {
 
                 System.out.println("You passed this lesson before");
                 studentMenu(nationalId);
 
-            }
-            else {
-                registerCourseService.saveOrUpdate(new RegisterCourse(0D,CourseGrade.NO_VALUE, student1.getId(), course.getId()));
+            } else {
+                registerCourseService.saveOrUpdate(new RegisterCourse(0D, CourseGrade.NO_VALUE, student1.getId(), course.getId()));
             }
         } else {
             System.out.println("You choose wrong semester");
@@ -166,13 +165,33 @@ public class Menu {
 
     private void showlessonsWithGrade(String nationalId) {
         Optional<Student> student = studentService.studentInfo(nationalId);
+
         Student student1 = student.get();
+
 
         List<RegisterCourse> registerCourses = registerCourseService.listStudentLessonsWithGrade(student1);
 
+
         for (RegisterCourse status : registerCourses) {
-            System.out.println(status.getCourse().getName() + " Grade : " + status.getGrade() +
-                    " situation : " + status.getCourseGrade());
+
+            Course course = status.getCourse();
+
+            if (course != null) {
+
+                String courseName = course.getName();
+
+                String grade = String.valueOf(status.getGrade());
+
+                CourseGrade courseGrade = status.getCourseGrade();
+
+                System.out.println("Course Name: " + courseName + ", Grade: " + grade + ", Course Grade: " + courseGrade);
+
+            } else {
+
+                System.out.println("Course information is not available.");
+
+            }
+
         }
     }
 
@@ -210,64 +229,7 @@ public class Menu {
 
             switch (numberInput) {
                 case 1 -> professorInfo(nationalId);
-                case 2 -> {
-                    Optional<Professor> professor = professorService.professorInfo(nationalId);
-                    Professor professor1 = professor.get();
-
-//                    todo : show list lessonStatus to teacher
-//                    List<LessonStatus> all = lessonStatusService.findAll();
-
-//                    for (LessonStatus lessonStatus : all) {
-//                        if (teacher1.getId() == lessonStatus.getId()) {
-//                            System.out.println("You can set grade for this lessons");
-//                            System.out.println("Lesson name : " + lessonStatus.getLesson().getName() +
-//                                    " Student Name : " + lessonStatus.getStudent().getFirstName() + " " +
-//                                    lessonStatus.getStudent().getLastName() +
-//                                    " situation : " + lessonStatus.getLessonGrade() +
-//                                    lessonStatus.getId());
-//                        }
-//                    }
-                    long id = 0L;
-                    try {
-                        System.out.println("Enter id that you want give grade : ");
-                        id = scanner.nextLong();
-                        scanner.nextLine();
-                    } catch (NoSuchElementException e) {
-                        System.out.println("Invalid input. Please enter a valid number.");
-                        scanner.nextLine();
-                        professorMenu(nationalId);
-                    }
-
-                    double grade = 0D;
-                    try {
-                        System.out.println("Enter grade :");
-                        grade = scanner.nextDouble();
-                        scanner.nextLine();
-                    } catch (NoSuchElementException e) {
-                        System.out.println("Invalid input. Please enter a valid number.");
-                        scanner.nextLine();
-                        professorMenu(nationalId);
-                    }
-
-                    CourseGrade courseGrade;
-
-                    Optional<RegisterCourse> registerCourseServiceById = registerCourseService.findById(id);
-                    RegisterCourse registerCourse = registerCourseServiceById.get();
-
-
-                    if (grade < 20 || grade > 0) {
-                        if (grade >= 10)
-                            courseGrade = CourseGrade.PASSED;
-                        else
-                            courseGrade = CourseGrade.FAILED;
-
-                        registerCourse.setGrade(grade);
-                        registerCourse.setCourseGrade(courseGrade);
-                        registerCourseService.saveOrUpdate(registerCourse);
-
-                    } else
-                        System.out.println("You should enter grade between 0 - 20 !!!");
-                }
+                case 2 -> scoring(nationalId);
                 case 3 -> teacherSalaryPerUnit(nationalId);
                 case 0 -> System.out.println("Bye Bye");
                 default -> System.out.println("Wrong input");
@@ -275,23 +237,83 @@ public class Menu {
         }
     }
 
-    private void insertMarkByProfessor(List<Course> courseList) {
-        Scanner scanner = new Scanner(System.in);
+
+    public void scoring(String nationalId) {
+        System.out.println("enter the semester : ");
+        int semester = Integer.parseInt(scanner.nextLine());
+
+        Optional<Professor> professor = professorService.professorInfo(nationalId);
+        if (professor.isEmpty()) {
+            System.out.println("Professor not found with national ID: " + nationalId);
+            return; }
+        Professor professor1 = professor.get();
+
+        List<Course> courseList = courseService.findByProfessorIdAndSemester(professor1.getId(), semester);
         for (Course course : courseList) {
-            System.out.println("Enter the grades for course: " + course.getName());
-            List<RegisterCourse> registerCourses = course.getRegisterCourses();
-            for (RegisterCourse registerCourse : registerCourses) {
-                System.out.println("Enter the grade for student: " + registerCourse.getStudent().getFirstName() + " " + registerCourse.getStudent().getLastName());
-                double grade = scanner.nextDouble();
+            System.out.println("id : " + course.getId() + " name : " + course.getName());
+        }
+        long id = 0L;
+        try {
+            System.out.println("Enter course id that you want give  : ");
+            id = Long.parseLong(scanner.nextLine());
+        } catch (NoSuchElementException e) {
+            System.out.println("Invalid input. Please enter a valid number.");
+            return;
+        }
+        List<RegisterCourse> registerCourseList = registerCourseService.findByCourseId(id);
+        for (RegisterCourse registerCourse : registerCourseList) {
+            Long studentId = registerCourse.getStudentId();
+            Student student = studentService.findById(studentId);
+            System.out.println("id: " + studentId + " studentName:  "
+                    + student.getFirstName() + " " + student.getLastName());
+        }
+        System.out.println(" select studentId to get score: ");
+        long studentId = Long.parseLong(scanner.nextLine());
+        double grade = 0D;
+        try {
+            System.out.println("Enter grade :");
+            while (true) {
+                grade = Double.parseDouble(scanner.nextLine());
                 if (grade < 0 || grade > 20) {
-                    System.out.println("Invalid grade. Please enter a grade between 0 and 20.");
-                    insertMarkByProfessor(courseList);
-                    return;
-                }
-                registerCourse.setGrade(grade);
-                registerCourse.setCourseGrade(CourseGrade.PASSED);
-                registerCourseService.saveOrUpdate(registerCourse);
+                    System.out.println("You should enter grade between 0 - 20 !!!");
+                } else
+                    break;
             }
+        } catch (NoSuchElementException e) {
+            System.out.println("Invalid input. Please enter a valid number.");
+            return;
+        }
+
+
+        RegisterCourse registerCourse = registerCourseService.findByStudentIdAndCourseId(studentId, id);
+
+        if (registerCourse == null) {
+
+            System.out.println("RegisterCourse not found for student ID: " + studentId + " and course ID: " + id);
+
+            return;
+
+        }
+
+
+        CourseGrade courseGrade;
+
+        if (grade < 20 || grade > 0) {
+
+            if (grade >= 10)
+
+                courseGrade = CourseGrade.PASSED;
+
+            else
+
+                courseGrade = CourseGrade.FAILED;
+
+
+            registerCourse.setGrade(grade);
+
+            registerCourse.setCourseGrade(courseGrade);
+
+            registerCourseService.saveOrUpdate(registerCourse);
         }
     }
 
@@ -376,12 +398,12 @@ public class Menu {
     private void employeeSalary(String nationalId) {
 
         Optional<Employee> employee1 = employeeService.employeeSalary(nationalId);
-        if (employee1.isPresent()){
+        if (employee1.isPresent()) {
             System.out.println("name : " + employee1.get().getFirstName() + " " + employee1.get().getLastName() +
 
                     " national id : " + employee1.get().getNationalId() + " salary : " + employee1.get().getSalary());
-        }else
-            System.out.println("this employee with nationalId: " + nationalId+ " not found" );
+        } else
+            System.out.println("this employee with nationalId: " + nationalId + " not found");
     }
 
     private void deleteCourse() {

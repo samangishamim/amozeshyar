@@ -13,4 +13,7 @@ public interface RegisterCourseRepository extends BaseRepository<model.RegisterC
 
     public Optional<RegisterCourse> checkDoublLessonInOneSemster(Student student, Course course);
     double getGPA(int year, int semester, Long studentId);
+
+    RegisterCourse findByStudentIdAndCourseId(Long studentId, Long courseId);
+    Optional<List<RegisterCourse>> findByCourseId(long id);
 }

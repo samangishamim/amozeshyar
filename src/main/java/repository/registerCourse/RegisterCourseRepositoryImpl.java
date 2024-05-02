@@ -1,6 +1,7 @@
 package repository.registerCourse;
 
 import base.repository.BaseRepositoryImpl;
+import connection.SessionFactorySingleton;
 import model.Course;
 import model.RegisterCourse;
 import model.Student;
@@ -13,6 +14,9 @@ import java.util.Optional;
 
 public class RegisterCourseRepositoryImpl extends BaseRepositoryImpl<RegisterCourse, Long>
         implements RegisterCourseRepository {
+
+    SessionFactory sessionFactory = SessionFactorySingleton.getInstance();
+
     public RegisterCourseRepositoryImpl(SessionFactory sessionFactory) {
         super(sessionFactory);
     }
@@ -61,5 +65,28 @@ public class RegisterCourseRepositoryImpl extends BaseRepositoryImpl<RegisterCou
         query.setParameter("sId", studentId);
         List<Double> resultList = query.getResultList();
         return resultList.get(0);
+    }
+
+    @Override
+    public RegisterCourse findByStudentIdAndCourseId(Long studentId, Long courseId) {
+        Session session = sessionFactory.getCurrentSession();
+        Query<RegisterCourse> query = session.createQuery("FROM RegisterCourse r " +
+                " WHERE r.studentId = :studentId AND r.courseId = :courseId", RegisterCourse.class);
+        query.setParameter("studentId", studentId);
+        query.setParameter("courseId", courseId);
+        List<RegisterCourse> resultList = query.getResultList();
+        if (resultList.isEmpty()) {
+            return null;
+        }
+        return resultList.get(0);
+    }
+
+    @Override
+    public Optional<List<RegisterCourse>> findByCourseId(long id) {
+        Session session=sessionFactory.getCurrentSession();
+        Query<RegisterCourse> query = session.createQuery("FROM RegisterCourse r WHERE  r.courseId=:id", RegisterCourse.class);
+        query.setParameter("id",id);
+        List<RegisterCourse> registerCourseList = query.getResultList();
+        return Optional.ofNullable(registerCourseList);
     }
 }

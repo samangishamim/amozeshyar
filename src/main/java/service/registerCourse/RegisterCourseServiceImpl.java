@@ -52,5 +52,22 @@ public class RegisterCourseServiceImpl extends BaseServiceImpl<RegisterCourse, L
         }
         return 0;
     }
+
+    @Override
+    public List<RegisterCourse> findByCourseId(long id) {
+        try (Session session=sessionFactory.getCurrentSession()){
+            session.beginTransaction();
+           Optional<List<RegisterCourse> > optionalRegisterCourse =repository.findByCourseId(id);
+           optionalRegisterCourse.orElseThrow(
+                   () -> new NotFoundException(String.format("not found with id: %s " , id))
+           );
+           return optionalRegisterCourse.get();
+        }
+    }
+
+    @Override
+    public RegisterCourse findByStudentIdAndCourseId(Long studentId, Long courseId) {
+        return repository.findByStudentIdAndCourseId(studentId, courseId);
+    }
 }
 

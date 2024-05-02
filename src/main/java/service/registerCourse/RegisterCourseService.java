@@ -12,4 +12,9 @@ public interface RegisterCourseService extends BaseService<RegisterCourse , Long
     public List<RegisterCourse> listStudentLessonsWithGrade(Student student);
     public Optional<RegisterCourse> checkDoublLessonInOneSemster(Student student, Course course);
     double getGPA(int year, int semester, Long studentId);
+
+   List <RegisterCourse> findByCourseId(long id);
+
+
+    public RegisterCourse findByStudentIdAndCourseId(Long studentId, Long courseId);
 }
