@@ -43,11 +43,11 @@ public class  EmployeeRepositoryImpl extends BaseRepositoryImpl<Employee,Long> i
     }
 
     @Override
-    public Optional<Employee> employeeSalary(String username) {
+    public Optional<Employee> employeeSalary(String nationalId) {
         Session session = sessionFactory.getCurrentSession();
         Query<Employee> query = session.createQuery("FROM Employee e  " +
-                " WHERE e.nationalid=:nationalid" , Employee.class);
-        query.setParameter("username", username );
+                " WHERE e.nationalId=:nationalId" , Employee.class);
+        query.setParameter("nationalId", nationalId );
         Employee employee = query.uniqueResult();
 
         return Optional.ofNullable(query.getSingleResult());
