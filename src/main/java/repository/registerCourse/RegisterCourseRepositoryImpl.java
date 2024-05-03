@@ -70,11 +70,13 @@ public class RegisterCourseRepositoryImpl extends BaseRepositoryImpl<RegisterCou
     @Override
     public RegisterCourse findByStudentIdAndCourseId(Long studentId, Long courseId) {
         Session session = sessionFactory.getCurrentSession();
+        session.beginTransaction();
         Query<RegisterCourse> query = session.createQuery("FROM RegisterCourse r " +
                 " WHERE r.studentId = :studentId AND r.courseId = :courseId", RegisterCourse.class);
         query.setParameter("studentId", studentId);
         query.setParameter("courseId", courseId);
         List<RegisterCourse> resultList = query.getResultList();
+        session.getTransaction().commit();
         if (resultList.isEmpty()) {
             return null;
         }

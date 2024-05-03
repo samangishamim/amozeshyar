@@ -20,7 +20,9 @@ public class RegisterCourse  extends BaseEntity<Long> {
     @Enumerated(EnumType.STRING)
     @Column(name = "course_situation")
     private CourseGrade courseGrade;
+    @Column(name = "student_id")
     private Long studentId;
+    @Column(name = "course_id")
     private Long courseId;
 
     public RegisterCourse(Long aLong, double grade, Long studentId, Long courseId, Student student, Course course) {
