@@ -1,3 +1,4 @@
+import exception.NotFoundException;
 import model.*;
 import security_context.SecurityContext;
 import service.courceServise.CourseService;
@@ -326,24 +327,15 @@ public class Menu {
     }
 
     private void teacherSalaryPerUnit(String nationalId) {
-        Optional<Professor> professor = professorService.professorInfo(nationalId);
-        Professor professor1 = professor.get();
-        System.out.println("Teacher : " + professor1);
-
+        Professor professor = professorService.professorInfo(nationalId)
+                .orElseThrow(() -> new NotFoundException("Professor not found"));
+        Long professorId = professor.getId();
+        System.out.println("Teacher : " + professor);
         System.out.println("Please enter semester :");
         int semester = scanner.nextInt();
         scanner.nextLine();
-
-        Optional<Long> sumUnits = courseService.professorSemesterSalary(professor1, semester);
-        Long sumUnits1 = sumUnits.get();
-        Double mainSalary = professor1.getPayPerUnit();
-        Double finalSalary = 0D;
-
-        if (professor1.getProfessorType().equals(ProfessorType.FACULTY_MEMBER)) {
-            finalSalary = (sumUnits1 * 1000000) + mainSalary;
-            System.out.println(finalSalary);
-        } else
-            System.out.println(professor1.getBasicSalary());
+        double finalSalary = courseService.professorSemesterSalary(professorId, semester);
+        System.out.println(finalSalary);
     }
 
     public void employeeMenu(String nationalId) {
