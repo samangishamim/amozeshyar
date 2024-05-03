@@ -70,14 +70,16 @@ public class CourseRepositoryImpl extends BaseRepositoryImpl<Course, Long> imple
     }
 
     @Override
-    public Optional<Long> professorSemesterSalary(Professor professor, int semester) {
+    public double professorSemesterSalary(Long professorId, int semester) {
         Session session = sessionFactory.getCurrentSession();
-        Query<Long> query = session.createQuery("select sum (c.units) FROM course c\n" +
-                "                 WHERE c.professor_id=:professor AND c.semester=:semester"+Long.class);
-        query.setParameter("professor",professor);
-        query.setParameter("semester",semester);
-
-        return Optional.ofNullable(query.getSingleResult());
+        Professor professor = session.get(Professor.class, professorId);
+        double sumOfUnit=0;
+        for (Course course : professor.getCourseList()) {
+            if (course.getSemester()==semester){
+               sumOfUnit += course.getUnits();
+            }
+        }
+        return professor.getBasicSalary()+ sumOfUnit*1000000;
     }
 
     @Override

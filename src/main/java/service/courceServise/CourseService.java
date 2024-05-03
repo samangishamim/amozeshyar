@@ -10,7 +10,7 @@ import java.util.Optional;
 public interface CourseService extends BaseService<Course, Long> {
 
     void addCourse(Course course,Long professorId);
-    public Optional<Long> professorSemesterSalary(Professor professor , int semester);
+    public double professorSemesterSalary(Long professorId , int semester);
     public List<Course> findBySemester(Integer semester);
 
    List <Course> findByProfessorIdAndSemester(Long id, int semester);

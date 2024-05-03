@@ -29,15 +29,14 @@ public class CourseServiceImpl extends BaseServiceImpl<Course, Long, CourseRepos
     }
 
     @Override
-    public Optional<Long> professorSemesterSalary(Professor professor, int semester) {
+    public double professorSemesterSalary(Long professorId, int semester) {
         try (Session session = sessionFactory.getCurrentSession()) {
             session.beginTransaction();
-            Optional<Long> find = repository.professorSemesterSalary(professor, semester);
-            find.orElseThrow(() -> new NotFoundException("Entity not found"));
+            double salary = repository.professorSemesterSalary(professorId, semester);
             session.getTransaction().commit();
-            return find;
+            return salary;
         } catch (Exception e) {
-            return Optional.empty();
+            return -1.0;
         }
     }
 
